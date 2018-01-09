@@ -1,0 +1,87 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Geospatial api test
+# during dev, should point to your local machine
+host: localhost:8888
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /places:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: place
+    get:
+      description: Return the array of place
+      # used as the method name of the controller
+      operationId: places
+      parameters:
+        - name: from_timestamp
+          in: query
+          description: query from time
+          required: false
+          type: number
+        - name: to_timestamp
+          in: query
+          description: query to time
+          required: false
+          type: number
+        - name: lat
+          in: query
+          description: location latitude
+          required: true
+          type: number
+        - name: lng
+          in: query
+          description: location longitude
+          required: true
+          type: number
+        - name: max_distance
+          in: query
+          description: max distance
+          required: false
+          type: number
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/PlaceResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  PlaceResponse:
+    properties:
+      name:
+        type: string
+      location:
+        type: object
+        properties:
+          lat:
+            type: number
+          lng:
+            type: number
+      timestamp:
+        type: number
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
