@@ -68,11 +68,11 @@ function search (req, res) {
       query.location.$maxDistance = maxDistance
     }
     if (fromTimestamp && toTimestamp) {
-      query.timestamp = { $gt: fromTimestamp, $lt: toTimestamp }
+      query.timestamp = { $gte: fromTimestamp, $lte: toTimestamp }
     } else if (fromTimestamp) {
-      query.timestamp = { $gt: fromTimestamp }
+      query.timestamp = { $gte: fromTimestamp }
     } else if (toTimestamp) {
-      query.timestamp = { $lt: toTimestamp }
+      query.timestamp = { $lte: toTimestamp }
     }
 
     console.log('query', query)
