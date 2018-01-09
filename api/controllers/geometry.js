@@ -76,14 +76,14 @@ function search (req, res) {
     }
 
     console.log('query', query)
-    db.collection('places').find(query).toArray(function (err, places) {
+    db.collection('geometries').find(query).toArray(function (err, geometries) {
       if (err) {
         return res.json(err)
       }
-      console.log(places)
+      console.log(geometries)
       // this sends back a JSON response which is a single string
       client.close()
-      return res.json(places)
+      return res.json(geometries)
     })
   })
 }
@@ -104,7 +104,7 @@ function add (req, res) {
     console.log('Connected successfully to server')
 
     const db = client.db(dbName)
-    const user = {
+    const geometry = {
       name,
       location: {
         type: 'Point',
@@ -112,7 +112,7 @@ function add (req, res) {
       },
       timestamp: (new Date()).getTime()
     }
-    db.collection('places').insertMany([user], function (err, result) {
+    db.collection('geometries').insertMany([geometry], function (err, result) {
       if (err) {
         return res.json(err)
       }

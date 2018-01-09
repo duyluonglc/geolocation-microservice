@@ -21,9 +21,9 @@ produces:
 paths:
   /geoentries:
     # binds a127 app logic to a route
-    x-swagger-router-controller: user
+    x-swagger-router-controller: geometry
     post:
-      description: Add new user
+      description: Add new geometry
       # used as the method name of the controller
       operationId: add
       parameters:
@@ -42,12 +42,17 @@ paths:
           description: location longitude
           required: true
           type: number
+        - name: timestamp
+          in: formData
+          description: timestamp default is current time
+          required: false
+          type: number
       responses:
         "200":
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/UserResponse"
+            $ref: "#/definitions/GeometryResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -100,7 +105,7 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  UserResponse:
+  GeometryResponse:
     properties:
       name:
         type: string
