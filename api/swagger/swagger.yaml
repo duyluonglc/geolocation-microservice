@@ -14,17 +14,49 @@ schemes:
 # format of bodies a client can send (Content-Type)
 consumes:
   - application/json
+  - application/formData
 # format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
-  /places:
+  /geoentries:
     # binds a127 app logic to a route
-    x-swagger-router-controller: place
-    get:
-      description: Return the array of place
+    x-swagger-router-controller: user
+    post:
+      description: Add new user
       # used as the method name of the controller
-      operationId: places
+      operationId: add
+      parameters:
+        - name: name
+          in: formData
+          description: name
+          required: true
+          type: string
+        - name: lat
+          in: formData
+          description: location latitude
+          required: true
+          type: number
+        - name: lng
+          in: formData
+          description: location longitude
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/UserResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      description: Search user
+      # used as the method name of the controller
+      operationId: search
       parameters:
         - name: from_timestamp
           in: query
@@ -55,8 +87,10 @@ paths:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/PlaceResponse"
+            type: array
+              # a pointer to a definition
+            items:
+              $ref: "#/definitions/UserResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -66,17 +100,17 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  PlaceResponse:
+  UserResponse:
     properties:
       name:
         type: string
       location:
         type: object
         properties:
-          lat:
-            type: number
-          lng:
-            type: number
+          type:
+            type: string
+          coordinates:
+            type: array
       timestamp:
         type: number
   ErrorResponse:

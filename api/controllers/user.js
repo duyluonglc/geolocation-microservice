@@ -26,7 +26,8 @@ const database = require('../../config/database')
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  places: places
+  search,
+  add
 }
 
 /*
@@ -35,7 +36,7 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function places (req, res) {
+function search (req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   const fromTimestamp = req.swagger.params.from_timestamp.value
   const toTimestamp = req.swagger.params.to_timestamp.value
@@ -83,6 +84,42 @@ function places (req, res) {
       // this sends back a JSON response which is a single string
       client.close()
       return res.json(places)
+    })
+  })
+}
+
+function add (req, res) {
+  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
+  const name = req.swagger.params.name.value
+  const lat = req.swagger.params.lat.value
+  const lng = req.swagger.params.lng.value
+
+  const dbURL = database.url
+  const dbName = database.dbName
+  MongoClient.connect(dbURL, function (err, client) {
+    if (err) {
+      return res.json(err)
+    }
+
+    console.log('Connected successfully to server')
+
+    const db = client.db(dbName)
+    const user = {
+      name,
+      location: {
+        type: 'Point',
+        coordinates: [lng, lat]
+      },
+      timestamp: (new Date()).getTime()
+    }
+    db.collection('places').insertMany([user], function (err, result) {
+      if (err) {
+        return res.json(err)
+      }
+      console.log(result.ops[0])
+      // this sends back a JSON response which is a single string
+      client.close()
+      return res.json(result.ops[0])
     })
   })
 }
