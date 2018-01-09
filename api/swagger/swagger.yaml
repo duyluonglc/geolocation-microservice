@@ -59,7 +59,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
     get:
-      description: Search user
+      description: Search geometry
       # used as the method name of the controller
       operationId: search
       parameters:
@@ -95,7 +95,7 @@ paths:
             type: array
               # a pointer to a definition
             items:
-              $ref: "#/definitions/UserResponse"
+              $ref: "#/definitions/GeometryResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -111,11 +111,6 @@ definitions:
         type: string
       location:
         type: object
-        properties:
-          type:
-            type: string
-          coordinates:
-            type: array
       timestamp:
         type: number
   ErrorResponse:
