@@ -60,8 +60,8 @@ function search (req, res) {
         $near: {
           type: 'Point',
           coordinates: [lng, lat]
-        },
-        $spherical: true
+        }
+        // $spherical: true
       }
     }
     if (maxDistance) {
